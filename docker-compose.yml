@@ -1,0 +1,35 @@
+# Optional Postgres-backed setup. The default (no compose, just uvicorn) uses
+# SQLite and needs none of this. Use compose when you want to mirror a
+# production Postgres environment locally.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: aegis
+      POSTGRES_PASSWORD: aegis
+      POSTGRES_DB: aegisscan
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aegis"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      AEGIS_ENV: production
+      AEGIS_DEBUG: "false"
+      AEGIS_SECRET_KEY: change-me-in-real-deployments
+      AEGIS_DATABASE_URL: postgresql+psycopg://aegis:aegis@db:5432/aegisscan
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:
