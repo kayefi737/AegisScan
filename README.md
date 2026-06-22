@@ -8,8 +8,8 @@ every failure carries the *exact configuration line to fix it* and its *OWASP To
 mapping*. No installation, no signup, no external services required to run it.
 
 AegisScan is a stronger sibling of **PostureScan** (TechCrush Cloud Computing
-cohort 6, Group 12). It keeps what made PostureScan good — instant grading,
-concrete fixes, guest scanning, a privacy-aware public dashboard — and pushes
+cohort 6, Group 12). It keeps what made PostureScan good (instant grading,
+concrete fixes, guest scanning, a privacy-aware public dashboard) and pushes
 several items straight off PostureScan's own "future work" slide into the product:
 deeper checks, OWASP mapping, and a first-class documented REST API. It also runs
 with a **single command and zero managed services**, which the original could not.
@@ -17,7 +17,7 @@ with a **single command and zero managed services**, which the original could no
 > Built: 17 June 2026. The code in this repo was authored carefully but **not executed
 > in the environment it was written in** (no sandbox was available). The
 > [Quick start](#-quick-start) and [Testing](#-testing) sections give you exact
-> commands to run and verify it locally — start there.
+> commands to run and verify it locally; start there.
 
 ---
 
@@ -49,7 +49,7 @@ with a **single command and zero managed services**, which the original could no
 Three things are true about web security today:
 
 1. **Almost every production site has at least one trivially fixable
-   misconfiguration** — a missing security header, a cookie without `Secure`, a
+   misconfiguration**: a missing security header, a cookie without `Secure`, a
    domain with no DMARC record.
 2. **Finding those issues normally means assembling five specialist tools** and
    reading five different specifications.
@@ -75,7 +75,7 @@ fix written out for you.**
 | Scoring | grade shown | **published, reproducible weighted rubric** (`/api/meta`) |
 | Run requirements | React + Django + Supabase + Railway + Vercel | **one `uvicorn` command, SQLite, zero managed services** |
 | Reports | PDF (auth) | **JSON + HTML (public) + PDF (auth)** |
-| Driver/runtime bugs | hit `psycopg2` + Sentry crashes on Py 3.13 | **ships `psycopg` v3 + Sentry ≥ 2.61** — those exact bugs pre-fixed |
+| Driver/runtime bugs | hit `psycopg2` + Sentry crashes on Py 3.13 | **ships `psycopg` v3 + Sentry ≥ 2.61**, those exact bugs pre-fixed |
 | Adding a check | edit the scanner | **drop a function into a check module**, the runner picks it up |
 
 The last three rows are deliberate: PostureScan's own slides 9–10 document the
@@ -101,7 +101,7 @@ hostname ─▶ normalize ─▶ SSRF guard ─▶ probe (concurrent) ─▶ eva
    loopback, link-local or reserved address (SSRF protection).
 3. **Probe once, concurrently**: a single HTTPS request (following redirects), a
    plain-HTTP request (to test the redirect-to-HTTPS), a raw TLS handshake, a batch
-   of DNS lookups, and a `/.well-known/security.txt` fetch — all in parallel.
+   of DNS lookups, and a `/.well-known/security.txt` fetch, all in parallel.
 4. **Evaluate**: every check is a *pure function* that reads the shared probe data
    and returns findings. No check makes its own network call, so the engine is fast
    and deterministic to test.
@@ -127,7 +127,7 @@ hostname ─▶ normalize ─▶ SSRF guard ─▶ probe (concurrent) ─▶ eva
                     │ or Postgres (optional)  │   with one env var
                     └────────────────────────┘
 
-   The scan engine reaches OUT to target sites — strictly read-only, behind an
+   The scan engine reaches OUT to target sites, strictly read-only, behind an
    SSRF guard that blocks private address space.
 ```
 
@@ -148,7 +148,7 @@ because it is stateless apart from the database.
 | ORM / DB | **SQLAlchemy 2** → **SQLite** default / **Postgres** optional | zero-config locally, production-ready when needed |
 | Auth | **JWT** (python-jose) + **bcrypt** (passlib) | stateless guest + authenticated flows |
 | Probing | **httpx** (async) + stdlib `ssl`/`socket` + **dnspython** | concurrent, no heavy deps |
-| Reports | **Jinja2** (HTML) + **reportlab** (PDF) | reportlab is pure-Python — no system libraries |
+| Reports | **Jinja2** (HTML) + **reportlab** (PDF) | reportlab is pure-Python, no system libraries |
 | Frontend | **vanilla JS + Tailwind (CDN)** | no build step; the whole app runs from `uvicorn` |
 | Monitoring | **sentry-sdk ≥ 2.61** (optional) | the version that does *not* crash on Python 3.13 |
 | Tests | **pytest** | runs fully offline |
@@ -178,7 +178,7 @@ and (on failure) a concrete fix plus an OWASP Top-10 mapping.
 - `Cross-Origin-Opener-Policy` present
 - Software version not disclosed (`Server` / `X-Powered-By`)
 
-### 3. Content Security Policy (`csp`) — *deep analysis*
+### 3. Content Security Policy (`csp`): *deep analysis*
 - CSP header present
 - No `'unsafe-inline'` in the script context
 - No `'unsafe-eval'`
@@ -250,14 +250,14 @@ The grade is never a black box. The full rubric is also served live at
 
 *Worked example:* a site that aces everything except it is missing HSTS (one
 `fail`, weight 2.0, inside the `headers` category) loses part of the `headers`
-score, which is then weighted at 2.0 in the mean — so a single high-value miss
+score, which is then weighted at 2.0 in the mean, so a single high-value miss
 visibly moves the grade, exactly as intended.
 
 ---
 
 ## ⚡ Quick start
 
-**Prerequisites:** Python 3.11+ (3.13 supported). That's it — no Node, no database
+**Prerequisites:** Python 3.11+ (3.13 supported). That's it: no Node, no database
 server, no cloud accounts.
 
 ```bash
@@ -271,7 +271,7 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 # 3. install
 pip install -r requirements.txt
 
-# 4. (optional) copy env defaults — the app also runs with no .env at all
+# 4. (optional) copy env defaults; the app also runs with no .env at all
 cp .env.example .env
 
 # 5. run
@@ -280,9 +280,9 @@ uvicorn app.main:app --reload
 
 Now open:
 
-- **http://127.0.0.1:8000/** — the app (scan a domain)
-- **http://127.0.0.1:8000/docs** — interactive API documentation
-- **http://127.0.0.1:8000/api/health** — health check
+- **http://127.0.0.1:8000/**: the app (scan a domain)
+- **http://127.0.0.1:8000/docs**: interactive API documentation
+- **http://127.0.0.1:8000/api/health**: health check
 
 Scan something from the command line:
 
@@ -361,10 +361,10 @@ history, domain tracking, scan comparison, and PDF export.
 
 Every scan can be rendered three ways:
 
-- **JSON** — the raw `POST /api/scans` response or `GET /api/scans/{id}`. Machine
+- **JSON**: the raw `POST /api/scans` response or `GET /api/scans/{id}`. Machine
   readable; drop it into your own CI pipeline.
-- **HTML** — `GET /api/scans/{id}/report.html`. A clean standalone page.
-- **PDF** — `GET /api/scans/{id}/report.pdf` (authenticated). Generated with
+- **HTML**: `GET /api/scans/{id}/report.html`. A clean standalone page.
+- **PDF**: `GET /api/scans/{id}/report.pdf` (authenticated). Generated with
   reportlab, so there are **no system libraries to install** (a common pain with
   HTML-to-PDF tools).
 
@@ -389,7 +389,7 @@ never be enabled in a public deployment.
 
 ## 🧪 Testing
 
-The suite runs **fully offline** — the one scan success-path test monkeypatches the
+The suite runs **fully offline**: the one scan success-path test monkeypatches the
 engine, and the guard tests monkeypatch DNS resolution. No real hosts are contacted.
 
 ```bash
@@ -398,11 +398,11 @@ pytest -q
 
 What's covered:
 
-- `test_scoring.py` — grade bands, warning = half credit, info excluded, category weighting
-- `test_guard.py` — normalization + SSRF blocking of private/loopback IPs
-- `test_masking.py` — dashboard hostname masking + benchmark allowlist
-- `test_checks.py` — individual checks against synthetic probe data
-- `test_api.py` — health, meta, register/login, validation, scan persistence, auth gating, domain tracking
+- `test_scoring.py`: grade bands, warning = half credit, info excluded, category weighting
+- `test_guard.py`: normalization + SSRF blocking of private/loopback IPs
+- `test_masking.py`: dashboard hostname masking + benchmark allowlist
+- `test_checks.py`: individual checks against synthetic probe data
+- `test_api.py`: health, meta, register/login, validation, scan persistence, auth gating, domain tracking
 
 CI runs this matrix on Python **3.11, 3.12 and 3.13** on every push to `main` or
 `staging` (`.github/workflows/ci.yml`).
@@ -446,14 +446,14 @@ AegisScan keeps the parts of PostureScan's pipeline that worked and removes the
 parts that bit them.
 
 **Branch model (kept):** develop on `staging`, promote to `main` by
-**fast-forward only**. `main` is therefore always a strict ancestor of `staging` —
+**fast-forward only**. `main` is therefore always a strict ancestor of `staging`, with
 no merge commits, no divergence. CI must be green before promotion.
 
 **Migrations (fixed):** PostureScan's migrations silently didn't run because the
 Nixpacks builder ignored the Procfile release line. AegisScan creates tables on
 startup for SQLite, and for Postgres you run Alembic in an explicit pre-deploy hook
 (e.g. Railway `railway.json` `preDeployCommand`, or `alembic upgrade head` in your
-container entrypoint) — never relying on an implicit Procfile line.
+container entrypoint), never relying on an implicit Procfile line.
 
 **CORS (fixed):** one **regex** rule (`AEGIS_CORS_ALLOW_ORIGIN_REGEX`) matches every
 ephemeral preview hostname, so preview deploys are never rejected.
@@ -490,7 +490,7 @@ that way in any shared deployment.
 
 ## 📜 License
 
-MIT — see [`LICENSE`](./LICENSE).
+MIT. See [`LICENSE`](./LICENSE).
 
 *AegisScan stands on the shoulders of PostureScan. Thanks to that team for a sharp
 problem statement and an honest write-up of what broke; several fixes here exist
